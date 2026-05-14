@@ -38,3 +38,17 @@ class TodoController(Controller):
                 return self.dao.create(data)
         except Exception as e:
             raise
+
+    def delete(self, id: str):
+        try:
+            oid = ObjectId(id)
+            self.tasks_dao.collection.update_many(
+                {'todos': oid},
+                {'$pull': {'todos': oid}}
+            )
+            deleted = self.dao.collection.delete_one({'_id': oid})
+            if deleted.deleted_count != 1:
+                raise Exception('Todo could not be deleted')
+            return True
+        except Exception as e:
+            raise

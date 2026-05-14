@@ -81,6 +81,8 @@ class TaskController(Controller):
         """
         try:
             user = self.users_dao.findOne(id)
+            if 'tasks' not in user or not user['tasks']:
+                return []
             tasks = self.dao.find(filter={'_id': user['tasks']}, toid=['_id'])
 
             for task in tasks:
